@@ -29,7 +29,7 @@ data/
 ```
 git clone --recurse-submodules (this repo)
 cd $REPO_NAME/code
-(use python >= 3.5)
+(use python >= 3.7)
 pip3 install -r requirements.txt
 ```
 
