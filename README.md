@@ -22,8 +22,9 @@ data/
 ```
 ## Model
 ## Dependency
-- I use python3 (3.5.2) and python2 is not supported. 
-- I use PyTorch (1.1.0), though tensorflow-gpu is necessary to launch tensorboard.
+- I use python3 (3.7) and python2 is not supported. 
+- I use PyTorch (1.7.1)(latest version in this moment), though tensorflow-gpu is necessary to launch tensorboard.
+- PyTorch Ignite(0.4.2)[https://github.com/pytorch/ignite] Package is used for commandline api. 
 ## Install
 ```
 git clone --recurse-submodules (this repo)
