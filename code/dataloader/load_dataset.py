@@ -1,31 +1,156 @@
-from collections import defaultdict
+import math
+import os
+
+import PIL
+from tqdm import tqdm
 
 import torch
+import torchvision
+from torchvision import datasets
 
 from utils import *
-from .preprocess_image import preprocess_images
 
-import os
-import re
-from tqdm import tqdm
-import numpy as np
+'''
+dataset_types = [tiny_imagenet_dataset', 'imagenet_dataset', 'mnist_dataset', 'stl10_dataset', 'cifar10_dataset', 'cifar100_dataset']
 
-from torch.utils.data import Dataset, DataLoader
+I assumed we only use training data in the pretrain stage. If not, we need to reimplement it.
+'''
 
-modes = ['train', 'traintest','val', 'test']
+class ImagenetDataset:
+    def __init__(args, transform, eval_stage, bs, sf, nw):
+        self.tf = transform
+        self.st = eval_stage
+        self.bs = bs
+        self.sf = sf
+        self.nw = nw
 
-def load_data(args):
-    print('Loading image data')
+        if self.st == 'test':
+            ip = os.path.join(args.image_path / 'train')
+            self.loader = datasets.ImageFolder(ip, transform=self.tf)
+        else:
+            ip = os.path.join(args.image_path / 'val')
+            self.loader = datasets.ImageFolder(ip, transform=self.tf)
 
-    train_iter, traintest_iter, val_iter = preprocess_images(args)
+    def __call__(self, x):
+        return torch.utils.data.DataLoader(self.loader, batch_size=self.bs, shuffle=self.sf, num_workers=self.nw, pin_memory=True)
 
-    return {'train': train_iter, 'traintest': traintest_iter, 'val': val_iter, 'test': val_iter}
+    @classmethod
+    def resolve_args(self, args, transform, eval_stage):
+        return cls(args, transform, eval_stage, args.batch, args.suffle, args.worker)
 
-def get_iterator(args):
-    iters = load_data(args)
-    print("Data loading done")
+class TinyImagenetDataset:
+    def __init__(args, transform, eval_stage, bs, sf, nw):
+        self.tf = transform
+        self.st = eval_stage
+        self.bs = bs
+        self.sf = sf
+        self.nw = nw
 
-    return iters
+        if self.st == 'test':
+            ip = os.path.join(args.image_path / 'train')
+            self.loader = datasets.ImageFolder(ip, transform=self.tf)
+        else:
+            ip = os.path.join(args.image_path / 'val')
+            self.loader = datasets.ImageFolder(ip, transform=self.tf)
+
+    def __call__(self, x):
+        return torch.utils.data.DataLoader(self.loader, batch_size=self.bs, shuffle=self.sf, num_workers=self.nw, pin_memory=True)
+
+    @classmethod
+    def resolve_args(self, args, transform, eval_stage):
+        return cls(args, transform, eval_stage, args.batch, args.suffle, args.worker)
+
+class MNISTDataset:
+    def __init__(args, transform, eval_stage, bs, sf, nw, ip):
+        self.tf = transform
+        self.st = eval_stage
+        self.bs = bs
+        self.sf = sf
+        self.nw = nw
+        self.ip = ip
+
+        if self.st == 'test':
+            self.loader = datasets.MNIST(self.ip, train=False, transform=self.tf, download=True)
+            
+        else:
+            self.loader = datasets.MNIST(self.ip, train=True, transform=self.tf, download=True)
+
+    def __call__(self, x):
+        return torch.utils.data.DataLoader(self.loader, batch_size=self.bs, shuffle=self.sf, num_workers=self.nw, pin_memory=True)
+
+    @classmethod
+    def resolve_args(self, args, transform, eval_stage):
+        return cls(args, transform, eval_stage, args.batch, args.suffle, args.worker, args.image_path)
+
+class STL10Dataset:
+    def __init__(args, transform, eval_stage, bs, sf, nw, ip):
+        self.tf = transform
+        self.st = eval_stage
+        self.bs = bs
+        self.sf = sf
+        self.nw = nw
+        self.ip = ip
+
+        if self.st == 'test':
+            self.loader = datasets.STL10(self.ip, train=False, transform=self.tf, download=True)
+            
+        else:
+            self.loader = datasets.STL.10(self.ip, train=True, transform=self.tf, download=True)
+
+    def __call__(self, x):
+        return torch.utils.data.DataLoader(self.loader, batch_size=self.bs, shuffle=self.sf, num_workers=self.nw, pin_memory=True)
+
+    @classmethod
+    def resolve_args(self, args, transform, eval_stage):
+        return cls(args, transform, eval_stage, args.batch, args.suffle, args.worker, args.image_path)
+
+class CIFAR10Dataset:
+    def __init__(args, transform, eval_stage, bs, sf, nw, ip):
+        self.tf = transform
+        self.st = eval_stage
+        self.bs = bs
+        self.sf = sf
+        self.nw = nw
+        self.ip = ip
+
+        if self.st == 'test':
+            self.loader = datasets.CIFAR10(self.ip, train=False, transform=self.tf, download=True)
+            
+        else:
+            self.loader = datasets.CIFAR10(self.ip, train=True, transform=self.tf, download=True)
+
+    def __call__(self, x):
+        return torch.utils.data.DataLoader(self.loader, batch_size=self.bs, shuffle=self.sf, num_workers=self.nw, pin_memory=True)
+
+    @classmethod
+    def resolve_args(self, args, transform, eval_stage):
+        return cls(args, transform, eval_stage, args.batch, args.suffle, args.worker, args.image_path)
+
+class CIFAR100Dataset:
+    def __init__(args, transform, eval_stage, bs, sf, nw, ip):
+        self.tf = transform
+        self.st = eval_stage
+        self.bs = bs
+        self.sf = sf
+        self.nw = nw
+        self.ip = ip
+
+        if self.st == 'test':
+            self.loader = datasets.CIFAR100(self.ip, train=False, transform=self.tf, download=True)
+            
+        else:
+            self.loader = datasets.CIFAR100(self.ip, train=True, transform=self.tf, download=True)
+
+    def __call__(self, x):
+        return torch.utils.data.DataLoader(self.loader, batch_size=self.bs, shuffle=self.sf, num_workers=self.nw, pin_memory=True)
+
+    @classmethod
+    def resolve_args(self, args, transform, eval_stage):
+        return cls(args, transform, eval_stage, args.batch, args.suffle, args.worker, args.image_path)
 
 
 
+
+
+
+        

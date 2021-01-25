@@ -1,90 +1,63 @@
+'''
+Munch is a Python dictionary that provides attribute-style access
+'''
+
 from pathlib import Path
 import random
+import numpy as np
+from tqdm import tqdm
 
 from fire import Fire
 from munch import Munch
 
 import torch
-import numpy as np
 
-from config import config, debug_options
-from dataloader.load_dataset import get_iterator
-from utils import wait_for_key, suppress_stdout
+from dataloader import get_transform, get_dataset
+from config import config, eval_linear, eval_semi, eval_transfer
 from train import train
-#from evaluate import evaluate
-#from infer import infer 
+from eval_linear import eval_linear
+
+from utils import wait_for_key, suppress_stdout, prepare_batch
 
 class Cli:
     def __init__(self):
-        self.defaults = config
-        self.debug = debug_options
+        self.cf = config 
+        self.el = eval_linear
+        self.es = eval_semi
+        self.et = eval_transfer
 
-    # update arguments if any argument was given from command
-    def _default_args(self, **kwargs):
-        args = self.defaults
-        if 'debug' in kwargs:
-            args.update(self.debug)
+    def pretrain(self, **kwargs):
+        args = self.cf
         args.update(kwargs)
-        
-        #update arguments to its absolute path
-        args.update(resolve_paths(config))
+        args.update(resolve_path(args))
         args.update(fix_seed(args))
         args.update(get_device(args))
-        
-        # at the end, print all the updated arguments
+
         print(args)
 
-        return Munch(args)
-
-    # the most important part, checking dataloader dir
-    def check_dataloader(self, **kwargs):
-        from dataloader.load_dataset import modes
-        from utils import prepare_batch
-        from tqdm import tqdm 
-        print("check_dataloader")
-
-        args = self._default_args(**kwargs)
-        iters = get_iterator(args)
-        #print(iters['train'])
-
-        #for batch_idx, (inputs, targets) in enumerate(iters['train']):
-        #    print("{}:({},{})".format(batch_idx, inputs.shape, targets.shape))
-        #    106:(torch.Size([16, 3, 224, 224]),torch.Size([16]))
-
-        #for batch in iters['train']:
-        #    print('Test loading train data')
-        #    batch = prepare_batch(args, batch)
-
-        train_iter_test = next(iter(iters['train'])) # take out 1 batch
-        # see if iteration in train proceeds well
-        for (key1, key2), value in train_iter_test.items():
-            if isinstance(value, torch.Tensor):
-                print(key1, key2, value.shape)
-            else:
-                print(key1, key2, value)
-        
-        #print("test loading val data")
-        #for batch_idx, batch in tqdm(iters['val']):
-        #    batch = prepare_batch(args, batch)
-
-        #for mode in modes:
-        #    print('Test loading %s data' % mode)
-        #    for batch_idx, batch in tqdm(iters[mode]):
-        #    #    import ipdb; ipdb.set_trace() # XXX DEBUG
-        #        batch = prepare_batch(args, batch)
-
-    def train(self, **kwargs):
-        args = self._default_args(**kwargs)
-        train(args)
+        args = Munch(args)
+        pretrain(args)
         wait_for_key()
 
+    def eval_linear(self, **kwargs):
+        args = self.el
+        args.update(kwargs)
+        args.update(resolve_path(args))
+        args.update(fix_seed(args))
+        args.update(get_device(args))
 
-def resolve_paths(config):
-    paths = [k for k in config.keys() if k.endswith('_path')]
-    res  = {}
+        print(args)
+
+        args = Munch(self.tf, args)
+        eval_linear(args)
+        wait_for_key()
+
+def resolve_paths(args):
+    paths = [k for k in args.keys() if k.endswith('_path')]
+    res = {}
     root = Path('../').resolve()
     for path in paths:
-        res[path] = root / config[path]
+        res[path] = root / args[path]
 
     return res
 
@@ -95,15 +68,27 @@ def fix_seed(args):
     np.random.seed(args['random_seed'])
     torch.manual_seed(args['random_seed'])
     torch.cuda.manual_seed_all(args['random_seed'])
+
     return args
 
 def get_device(args):
-    if hasattr(args, 'device'):
+    is hasattr(args, 'device'):
         device = args.device
 
     else:
-        device = "cuda" if torch.cuda.is_available() else "cpu"
+        device = "cuda" if torch.cuda_is_available() else "cpu"
+
     return {'device': device}
 
-if __name__ == "__main__":
+def set_distributed(args):
+    pass
+
+if __name__=="__main__":
     Fire(Cli)
+
+
+        
+
+
+
+
