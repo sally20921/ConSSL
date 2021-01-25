@@ -20,6 +20,7 @@ config = {
         # distribution
         'distributed': False,
         'fp16_opt_level': '02',
+        'sync_bn': True,
         # data loading
         'cache_image_vectors': False, 
         'dataset': 'imagenet' # 'mnist', 'stl10', 'cifar10', 'cifar100'
@@ -30,9 +31,17 @@ config = {
         'transform': 'sim_siam_transform',
         # model
         'use_inputs': ['x_i', 'x_j'],
-        'use_outputs': ['p_i', 'p_j', 'z_i', 'z_j'], # simclr ['h', 'z']
+        'use_outputs': ['p_i', 'p_j', 'z_i', 'z_j'], # simclr [p, z]
+        'resnet': 'resnet50',
+        'pretrained': False,
+        'base_momentum': 0.996,
+        'projection': 'mlp',
+        'prj_dim': (2048, 256, 4096), # in_dim, out_dim, hsz
+        'prediction': 'mlp',
+        'prd_dim': (256, 256, 4096),
         # loss
         'loss': 'sim_siam_loss',
+        'temperature': 0.1,
         # optimizer
         'optimizer': 'larc', # lars
         'sub_optimizer': 'sgd', # 'adam', 'adagrad', optimizer to wrap larc

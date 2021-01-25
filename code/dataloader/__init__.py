@@ -5,6 +5,7 @@ import torch
 import torchvision
 
 from inflection import underscore
+import inspect
 
 dataset_dict = {}
 transform_dict = {}
