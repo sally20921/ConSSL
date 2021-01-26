@@ -20,7 +20,7 @@ from optimizer import get_optimizer, get_sub_optimizer, get_scheduler
 from logger import get_logger, log_results, log_reults_cmd
 
 from utils import _prepare_batch
-from metric import get_metrics
+# from metric import get_metrics
 
 
 def eval_linear(pretrain_args, args):
@@ -41,7 +41,7 @@ def eval_linear(pretrain_args, args):
     trainer = get_trainer(args, model, loss_fn, optimizer, scheduler)
     evaluator = get_evaluator(args, model, loss_fn)
 
-    metrics = get_metrics(args)
+    # metrics = get_metrics(args)
     logger = get_logger(args)
     trainer.run(ds, max_epochs=args.epoch)
 
