@@ -72,7 +72,7 @@ def fix_seed(args):
     return args
 
 def get_device(args):
-    is hasattr(args, 'device'):
+    if hasattr(args, 'device'):
         device = args.device
 
     else:

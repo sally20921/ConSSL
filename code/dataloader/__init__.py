@@ -26,8 +26,8 @@ def add_to_dict():
             for member in dir(module):
                 member = getattr(module, member)
                 if (inspect.isclass(member) and str(member.__name__).endswith('Transform')):
-                    transform_dict=[underscore(str(member.__name__))] = member
-                elif inspect.isclass(member) and str(member.__name__).endswith('Dataset')):
+                    transform_dict[underscore(str(member.__name__))] = member
+                elif (inspect.isclass(member) and str(member.__name__).endswith('Dataset')):
                     dataset_dict[underscore(str(member.__name__))] = member 
 
 
