@@ -19,3 +19,6 @@ def add_loss():
                 member = getattr(module, member)
                 if (inspect.isclass(member) and str(member.__name__).endswith('Loss')):
                     loss_dict[underscore(str(member.__name__))] = member
+
+
+add_loss()

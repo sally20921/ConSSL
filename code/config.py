@@ -62,7 +62,7 @@ config = {
         'metrics': [],
 }
 
-eval_linear = {        
+eval_linear = {
         # basic configuration
         'stage': 'eval_linear',
         'model': 'sim_siam',
@@ -77,9 +77,10 @@ eval_linear = {
         # distribution
         'distributed': False,
         'fp16_opt_level': '02',
+        'sync_bn': True,
         # data loading
         'cache_image_vectors': False, 
-        'dataset': 'imagenet_dataset' # 'mnist', 'stl10', 'cifar10', 'cifar100'
+        'dataset': 'imagenet' # 'mnist', 'stl10', 'cifar10', 'cifar100'
         'image_path': 'data/imagenet',
         'image_size': 224,
         'normalize': [0.485, 0.456, 0.406],[0.229, 0.224, 0.225]],
@@ -87,9 +88,18 @@ eval_linear = {
         'transform': 'sim_siam_transform',
         # model
         'use_inputs': ['x_i', 'x_j'],
-        'use_outputs': ['p_i', 'p_j', 'z_i', 'z_j'], # simclr ['h', 'z']
+        'use_outputs': ['p_i', 'p_j', 'z_i', 'z_j'], # simclr [p, z]
+        'resnet': 'resnet50',
+        'pretrained': False,
+        'base_momentum': 0.996,
+        'projection': 'mlp',
+        'prj_dim': (2048, 256, 4096), # in_dim, out_dim, hsz
+        'prediction': 'mlp',
+        'prd_dim': (256, 256, 4096),
+        'num_classes': 100,
         # loss
         'loss': 'sim_siam_loss',
+        'temperature': 0.1,
         # optimizer
         'optimizer': 'larc', # lars
         'sub_optimizer': 'sgd', # 'adam', 'adagrad', optimizer to wrap larc
@@ -108,7 +118,6 @@ eval_linear = {
         'eps': 1e-8, # caculating adaptive_lr
         # metric
         'metrics': [],
-
 }
 
 eval_semi = {
