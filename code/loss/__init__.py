@@ -20,5 +20,9 @@ def add_loss():
                 if (inspect.isclass(member) and str(member.__name__).endswith('Loss')):
                     loss_dict[underscore(str(member.__name__))] = member
 
+def get_loss(args):
+    loss = loss_dict[args.loss_name]
+    loss = loss.resolve_args(args)
+    return loss.to(args.device)
 
 add_loss()
