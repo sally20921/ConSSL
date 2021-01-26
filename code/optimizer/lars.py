@@ -6,7 +6,7 @@ SimCLR is optimized using LARS with linear learning rate scaling
 (i.e. lr_decay with the cosine decay schedule without restarts)
 '''
 import torch
-import torch.optim.optimizer import Optimizer
+from torch.optim.optimizer import Optimizer
 
 
 class LARS(Optimizer):
@@ -16,7 +16,7 @@ class LARS(Optimizer):
         self.trust_coef = trust_coefficient
         self.adaptive_lr = torch.ones([])
 
-        @classmethod
+    @classmethod
     def resolve_args(cls, args, sub_optimizer):
         options = {}
         options['trust_coefficient'] = args.get("trust_coefficient", 0.001)

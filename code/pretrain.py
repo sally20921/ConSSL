@@ -14,10 +14,10 @@ from utils import prepare_batch
 from logger import get_logger, log_results, log_results_cmd
 
 from ignite.engine.engine import Engine, State, Events
-from ignite.metric import Loss
+from ignite.metrics import Loss
 
 import numpy as np
-from apex import amp
+# from apex import amp
 import ignite.distributed as idist
 from ignite.contrib.engines import common
 

@@ -95,7 +95,7 @@ class STL10Dataset:
             self.loader = datasets.STL10(self.ip, train=False, transform=self.tf, download=True)
             
         else:
-            self.loader = datasets.STL.10(self.ip, train=True, transform=self.tf, download=True)
+            self.loader = datasets.STL10(self.ip, train=True, transform=self.tf, download=True)
 
     def __call__(self, x):
         return torch.utils.data.DataLoader(self.loader, batch_size=self.bs, shuffle=self.sf, num_workers=self.nw, pin_memory=True)

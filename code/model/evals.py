@@ -1,5 +1,5 @@
 import torch
-import torch.n as nn
+import torch.nn as nn
 
 class MLP(nn.Module):
     '''logistic regression. same as linear regression without further processing'''

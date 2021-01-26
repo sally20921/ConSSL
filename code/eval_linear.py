@@ -9,7 +9,7 @@ from tqdm import tqdm
 import numpy as np 
 
 from ignite.engine.engine import Engine, State, Events
-from ignite.metrics import Loss, Accuracy, TokKCategoricalAccuracy
+from ignite.metrics import Loss, Accuracy, TopKCategoricalAccuracy
 
 from dataloader import get_transform
 from dataloader import get_dataset
@@ -17,7 +17,7 @@ from ckpt import get_model_ckpt, save_ckpt
 from model import get_model, get_linear
 from loss import get_loss
 from optimizer import get_optimizer, get_sub_optimizer, get_scheduler
-from logger import get_logger, log_results, log_reults_cmd
+from logger import get_logger, log_results, log_results_cmd
 
 from utils import _prepare_batch
 # from metric import get_metrics

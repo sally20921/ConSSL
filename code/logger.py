@@ -34,7 +34,7 @@ def run_tensorboard(log_path):
 
     port_num = abs(hash(log_path))
     tb = program.TensorBoard(default.get_plugins(), get_assets_zip_provider())
-    tb.configure(argv=None, '--logdir', str(log_path), '--port', str(port_num), '--samples_per_plugin', 'text=100'])
+    tb.configure(argv=[None, '--logdir', str(log_path), '--port', str(port_num), '--samples_per_plugin', 'text=100'])
 
     url = tb.launch()
     return url

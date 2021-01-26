@@ -1,4 +1,4 @@
-from torchvision.models.resnet import ResNet, Bottleneck, BasiicBlock
+from torchvision.models.resnet import ResNet, Bottleneck, BasicBlock
 #from torchvision.models import resnet50
 import torch
 import torch.nn as nn

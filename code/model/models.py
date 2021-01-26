@@ -4,7 +4,7 @@ import torch.nn.functional as F
 
 from math import *
 import random
-from copy import ddepcopy
+from copy import deepcopy
 
 from .modules import * # resnet, prediction, projection class 
 from collections import defaultdict

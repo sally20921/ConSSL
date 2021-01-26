@@ -2,7 +2,7 @@ import math
 
 import torch
 from torch import nn
-from torch.nn.functional as F
+import torch.nn.functional as F
 
 class ContrastiveLoss:
     def __init__(self, temp):
@@ -45,8 +45,6 @@ class NTXentLoss:
         return cls(temp=args.temperature)
 
 class BYOLLoss:
-    def __init__(self):
-
     def forward(self, y_pred):
         p, z = (v for k, v in sorted(y_pred.items()))
         n = p.size(0)
@@ -61,8 +59,6 @@ class BYOLLoss:
 
 
 class SimSiamLoss:
-    def __init__(self):
-
     def _loss(p,z):
         z.detach() # stop gradient
         p = F.normalize(p, dim=1)

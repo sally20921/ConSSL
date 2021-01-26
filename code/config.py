@@ -23,10 +23,10 @@ config = {
         'sync_bn': True,
         # data loading
         'cache_image_vectors': False, 
-        'dataset': 'imagenet' # 'mnist', 'stl10', 'cifar10', 'cifar100'
+        'dataset': 'imagenet', # 'mnist', 'stl10', 'cifar10', 'cifar100'
         'image_path': 'data/imagenet',
         'image_size': 224,
-        'normalize': [0.485, 0.456, 0.406],[0.229, 0.224, 0.225]],
+        'normalize': [[0.485, 0.456, 0.406],[0.229, 0.224, 0.225]],
         # cifar norm = [[0.4914, 0.4822, 0.4465],[0.2023, 0.1994, 0.2010]]
         'transform': 'sim_siam_transform',
         # model
@@ -53,8 +53,8 @@ config = {
         'scheduler': 'simclr_lr',
         'warm_up': 10,
         'step_size': 0, # for step lr decay
-        'gamma': 0.1 # for step lr decay
-        'cycle': 0.5 # for cosine lr decay
+        'gamma': 0.1, # for step lr decay
+        'cycle': 0.5, # for cosine lr decay
         'trust_coefficient': 1e-3, # for calculating lr
         'clip': True, # clipping/scaling mode of larc
         'eps': 1e-8, # caculating adaptive_lr
@@ -80,10 +80,10 @@ eval_linear = {
         'sync_bn': True,
         # data loading
         'cache_image_vectors': False, 
-        'dataset': 'imagenet' # 'mnist', 'stl10', 'cifar10', 'cifar100'
+        'dataset': 'imagenet', # 'mnist', 'stl10', 'cifar10', 'cifar100'
         'image_path': 'data/imagenet',
         'image_size': 224,
-        'normalize': [0.485, 0.456, 0.406],[0.229, 0.224, 0.225]],
+        'normalize': [[0.485, 0.456, 0.406],[0.229, 0.224, 0.225]],
         # cifar norm = [[0.4914, 0.4822, 0.4465],[0.2023, 0.1994, 0.2010]]
         'transform': 'sim_siam_transform',
         # model
@@ -111,8 +111,8 @@ eval_linear = {
         'scheduler': 'simclr_lr',
         'warm_up': 10,
         'step_size': 0, # for step lr decay
-        'gamma': 0.1 # for step lr decay
-        'cycle': 0.5 # for cosine lr decay
+        'gamma': 0.1, # for step lr decay
+        'cycle': 0.5, # for cos,ine lr decay
         'trust_coefficient': 1e-3, # for calculating lr
         'clip': True, # clipping/scaling mode of larc
         'eps': 1e-8, # caculating adaptive_lr

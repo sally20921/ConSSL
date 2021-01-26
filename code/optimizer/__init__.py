@@ -18,7 +18,7 @@ def add_optims():
             module = eval(name)
             for member in dir(module):
                 member = getattr(module, member)
-                if hasattr(member, "__bases__") and ((optim.Optimizer in member.__bases__ or optim.lr_scheduler._LRScheduler in member.__bases__) or (optim.Optimizer in member.__bases__[0].__bases__ or optim.lr_scheduler._LRScheduler in member.__bases[0].__bases__)):
+                if hasattr(member, "__bases__") and ((optim.Optimizer in member.__bases__ or optim.lr_scheduler._LRScheduler in member.__bases__) or (optim.Optimizer in member.__bases__[0].__bases__ or optim.lr_scheduler._LRScheduler in member.__bases__[0].__bases__)):
                     optim_dict[underscore(str(member.__name__))] = member
 
 def get_sub_optimizer(args, model):

@@ -2,7 +2,7 @@ from contextlib import contextmanager
 import torch
 from torch import nn
 from torch.nn.parameter import Parameter
-import torch.optim.optimizer import Optimizer
+from torch.optim.optimizer import Optimizer
 
 
 class LARS(Optimizer):
@@ -12,7 +12,7 @@ class LARS(Optimizer):
         self.trust_coef = trust_coefficient
         self.clip = clip
 
-        @classmethod
+    @classmethod
     def resolve_args(cls, args, sub_optimizer):
         options = {}
         options['trust_coefficient'] = args.get("trust_coefficient", 0.001)

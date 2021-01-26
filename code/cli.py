@@ -14,7 +14,7 @@ import torch
 
 from dataloader import get_transform, get_dataset
 from config import config, eval_linear, eval_semi, eval_transfer
-from train import train
+from pretrain import pretrain
 from eval_linear import eval_linear
 
 from utils import wait_for_key, suppress_stdout, prepare_batch
@@ -29,7 +29,7 @@ class Cli:
     def pretrain(self, **kwargs):
         args = self.cf
         args.update(kwargs)
-        args.update(resolve_path(args))
+        args.update(resolve_paths(args))
         args.update(fix_seed(args))
         args.update(get_device(args))
 
@@ -76,7 +76,7 @@ def get_device(args):
         device = args.device
 
     else:
-        device = "cuda" if torch.cuda_is_available() else "cpu"
+        device = "cuda" if torch.cuda.is_available() else "cpu"
 
     return {'device': device}
 
