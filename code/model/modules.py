@@ -38,7 +38,7 @@ class Projection(nn.Module):
                 ])
             else:
                 layers.extend([
-                    nn.Linear(prev_diim, hsz),
+                    nn.Linear(prev_dim, hsz),
                     nn.BatchNorm1d(hsz),
                     nn.ReLU(inplace=True)
                 ])

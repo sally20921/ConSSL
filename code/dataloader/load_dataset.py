@@ -105,7 +105,7 @@ class STL10Dataset:
         return cls(args, transform, eval_stage, args.batch, args.suffle, args.worker, args.image_path)
 
 class CIFAR10Dataset:
-    def __init__(transform, eval_stage, bs, sf, nw, ip):
+    def __init__(self, transform, eval_stage, bs, sf, nw, ip):
         self.tf = transform
         self.st = eval_stage
         self.bs = bs
@@ -119,7 +119,7 @@ class CIFAR10Dataset:
         else:
             self.loader = datasets.CIFAR10(self.ip, train=True, transform=self.tf, download=True)
 
-    def __call__(self, x):
+    def __call__(self):
         return torch.utils.data.DataLoader(self.loader, batch_size=self.bs, shuffle=self.sf, num_workers=self.nw, pin_memory=True)
 
     @classmethod

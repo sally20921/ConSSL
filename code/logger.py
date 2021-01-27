@@ -1,5 +1,5 @@
 import logging 
-
+import os
 from tqdm import tqdm
 from tensorboardX import SummaryWriter
 from tensorboard import default, program
@@ -32,7 +32,7 @@ class Logger:
 def run_tensorboard(log_path):
     log = logging.getLogger('tensorflow').setLevel(logging.ERROR)
 
-    port_num = abs(hash(log_path))
+    port_num = 8000
     tb = program.TensorBoard(default.get_plugins(), get_assets_zip_provider())
     tb.configure(argv=[None, '--logdir', str(log_path), '--port', str(port_num), '--samples_per_plugin', 'text=100'])
 
@@ -41,11 +41,12 @@ def run_tensorboard(log_path):
 
 # forward compatibility for version > 1.12
 def get_assets_zip_provider():
-    path = os.path.join(tf.resource_loader.get_data_files_path(), 'webfiles.zip')
-    if not os.path.exists(path):
-        print('webfiles.zip static assets not found: %s', path)
-        return None
-    return lambda: open(path, 'rb')
+    #path = os.path.join(tf.resource_loader.get_data_files_path(), 'webfiles.zip')
+    #if not os.path.exists(path):
+    #    print('webfiles.zip static assets not found: %s', path)
+    #    return None
+    #return lambda: open(path, 'rb')
+    return None
 
 def log_results(logger, name, state, step):
     for key, val in state.metrics.items():

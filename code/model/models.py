@@ -8,13 +8,14 @@ from copy import deepcopy
 
 from .modules import * # resnet, prediction, projection class 
 from collections import defaultdict
+from torchvision.models import resnet50
 
 class SimSiam(nn.Module):
     def __init__(self, resnet, use_outputs):
         super(SimSiam, self).__init__()
 
-        self.backbone = resnet
-        self.projector = Projection(self.backbone.output_dim)
+        self.backbone = resnet50()
+        self.projector = Projection(2048)
         self.predictor = Prediction()
         self.encoder = nn.Sequential(self.backbone, self.projector)
 
@@ -31,28 +32,28 @@ class SimSiam(nn.Module):
 
     @classmethod
     def resolve_args(cls, args):
-        resnet = get_resnet[args.resnet]
-        return cls(args, resnet, args.use_outputs)
+        #resnet = get_resnet[args.resnet]
+        return cls(args.resnet, args.use_outputs)
 
 class BYOL(nn.Module):
     def __init__(self, args, resnet, use_outputs, base_momentum=0.996):
         super().__init__()
 
         self.t = base_momentum
-        self.backbone = resnet
-        self.projector = Projection(resnet50.output_dim, 256, 4096)
+        self.backbone = resnet50()
+        self.projector = Projection(2048, 256, 4096)
         #self.encoder = nn.Sequential(self.backbone, self.projector)
         self.predictor = Predictor(256, 256, 4096)
 
         self.online_network =  nn.Sequential(self.backbone, self.projector)
         self.target_network = nn.Sequential(self.backbone, self.projector)
-        self._initailize()
+        self._initialize()
 
         self.net_output_key = use_outputs
 
     def resolve_args(cls, args):
-        resnet = get_resnet[args.resnet]
-        return cls(args, resnet, args.use_outputs, args.base_momentum)
+        #resnet = get_resnet[args.resnet]
+        return cls(args, args.resnet, args.use_outputs, args.base_momentum)
 
     @torch.no_grad()
     def _initialize(self):

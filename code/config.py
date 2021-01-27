@@ -52,7 +52,7 @@ config = {
         # scheduler
         'scheduler': 'simclr_lr',
         'warm_up': 10,
-        'step_size': 0, # for step lr decay
+        'step_size': 0.1, # for step lr decay
         'gamma': 0.1, # for step lr decay
         'cycle': 0.5, # for cosine lr decay
         'trust_coefficient': 1e-3, # for calculating lr

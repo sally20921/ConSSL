@@ -9,6 +9,7 @@ from ckpt import get_model_ckpt, save_ckpt
 from model import get_model
 from loss import get_loss
 from optimizer import get_optimizer, get_sub_optimizer, get_scheduler
+from metrics import get_metrics
 
 from utils import prepare_batch
 from logger import get_logger, log_results, log_results_cmd
@@ -63,37 +64,37 @@ def pretrain(args):
 
     if ckpt_available:
         print("loaded checkpoint {} in pretraining stage".format(args.ckpt_name))
-        loss_fn = get_loss(args)
-        sub_optimizer = get_sub_optimizer(args, model)
-        optimizer = get_optimizer(args, sub_optimizer)
-        scheduler = get_scheduler(args, optimizer)
+    loss_fn = get_loss(args)
+    sub_optimizer = get_sub_optimizer(args, model)
+    optimizer = get_optimizer(args, sub_optimizer)
+    scheduler = get_scheduler(args, optimizer)
 
         # setup nvidia/apex amp
         # model, optimizer = amp.initialize(model, optimizer, opt_level=args.fp16_opt_level, num_losses=1)
         # model = idist.auto_model(model)
 
-        trainer = get_trainer(args, model, loss_fn, optimizer, scheduler)
+    trainer = get_trainer(args, model, loss_fn, optimizer, scheduler)
 
-        # metrics = get_metrics(args)
-        logger = get_logger(args)
+    metrics = get_metrics(args)
+    logger = get_logger(args)
 
-        @trainer.on(Events.STARTED)
-        def on_training_started(engine):
-            print("Begin Pretraining")
+    @trainer.on(Events.STARTED)
+    def on_training_started(engine):
+        print("Begin Pretraining")
 
         # batch-wise
-        @trainer.on(Events.ITERATION_COMPLETED)
-        def log_iter_results(engine):
-            log_results(logger, 'pretrain/iter', engine.state, engine.state.iteration)
+    @trainer.on(Events.ITERATION_COMPLETED)
+    def log_iter_results(engine):
+        log_results(logger, 'pretrain/iter', engine.state, engine.state.iteration)
 
-        # epoch-wise (ckpt)
-        @trainer.on(Events.EPOCH_COMPLETED)
-        def save_epoch(engine):
-            log_results(logger, 'pretrain/epoch', engine.state, engine.state.epoch)
-            log_results_cmd(logger, 'pretrain/epoch', engine.state, engine.state.epoch)
-            save_ckpt(args, engine.state.epoch, engine.state.metrics['loss'], model)
+    # epoch-wise (ckpt)
+    @trainer.on(Events.EPOCH_COMPLETED)
+    def save_epoch(engine):
+        log_results(logger, 'pretrain/epoch', engine.state, engine.state.epoch)
+        log_results_cmd(logger, 'pretrain/epoch', engine.state, engine.state.epoch)
+        save_ckpt(args, engine.state.epoch, engine.state.metrics['loss'], model)
 
-        trainer.run(ds, max_epochs=args.epoch)
+    trainer.run(ds, max_epochs=args.epoch)
 
 
 

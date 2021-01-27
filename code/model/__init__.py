@@ -24,12 +24,12 @@ def add_models():
                     linear_dict[underscore(str(member.__name__))] = member 
 
 def get_model(args):
-    model = model_dict[args.model_name]
+    model = model_dict[args.model]
     model = model.resolve_args(args)
     return model.to(args.device)
 
 def get_linear(args, pt_model, num_classe):
-    model = linear_dict[args.model_name]
+    model = linear_dict[args.model]
     model = model(args, pt_model, num_classes)
     return model.to(args.device)
 
