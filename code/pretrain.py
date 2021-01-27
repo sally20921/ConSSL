@@ -32,10 +32,16 @@ def get_trainer(args, model, loss_fn, optimizer, scheduler):
         net_inputs, target = prepare_batch(args, batch)
         # ** : dictionary input to each argument
         # y_pred : dict {z_i, z_j, p_i, p_j}
-        y_pred = model(**net_inputs)
+        x_i = net_inputs['x_i']
+        z_i, p_i = model(x_i)
+        x_j = net_inputs['x_j']
+        z_j, p_j = model(x_j)
+        #y_pred = model(**net_inputs)
+        del net_inputs, x_i, x_j
+        y_pred = {'p_i': p_i, 'p_j': p_j, 'z_i': z_i, 'z_j':z_j}
         batch_size = target.shape[0] # N
         loss = loss_fn(y_pred)
-        loss = loss.mean() # ddp
+        #loss = loss.mean() # ddp
 
         #with amp.scale_loss(loss, optimizer, loss_id=0) as scaled_loss:
         #    scaled_loss.backward()
@@ -48,7 +54,7 @@ def get_trainer(args, model, loss_fn, optimizer, scheduler):
     trainer = Engine(update_model)
 
     metrics = {
-            'loss': Loss(output_transform=lambda x:(x[0], x[1])),
+            'loss': Loss(loss_fn=loss_fn,output_transform=lambda x:(x[0], x[1])),
             }
 
     for name, metric in metrics.items():

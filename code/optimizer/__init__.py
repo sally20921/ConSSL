@@ -40,7 +40,7 @@ def get_scheduler(args, optimizer):
     #else: # args.stage == linear_eval:
     #    scdl = optim_dict[args.linear_eval_scheduler]
     scdl = scdl.resolve_args(args, optimizer)
-    scdl.zero_grad()
+    #scdl.zero_grad()
     return scdl
 
 add_optims()

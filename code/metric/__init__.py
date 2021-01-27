@@ -26,7 +26,7 @@ def add_metrics():
                     metric_dict[underscore(str(member.__name__))] = member
 
 
-def get_metrics(args, vocab):
+def get_metrics(args):
     metrics = {k: v for k, v in metric_dict.items() if k in args.metrics}
     for k, v in metrics.items():
         if hasattr(v, 'default_transform'):
