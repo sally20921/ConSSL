@@ -93,9 +93,11 @@ class SimSiam(nn.Module):
         x = self.features(x)
         x = x.view(x.size(0), -1)
         z = self.projection(x)
+        del x
         p = self.prediction(z)
-        y_pred = {'z': z, 'p': p}
-        return y_pred
+        #y_pred = {'z': z, 'p': p}
+        #return y_pred
+        return z, p
 
     @classmethod
     def resolve_args(cls, args):

@@ -34,10 +34,11 @@ def get_trainer(args, model, loss_fn, optimizer, scheduler):
         # y_pred : dict {z_i, z_j, p_i, p_j}
         x_i = net_inputs['x_i']
         z_i, p_i = model(x_i)
+        del x_i
         x_j = net_inputs['x_j']
         z_j, p_j = model(x_j)
         #y_pred = model(**net_inputs)
-        del net_inputs, x_i, x_j
+        del net_inputs, x_j
         y_pred = {'p_i': p_i, 'p_j': p_j, 'z_i': z_i, 'z_j':z_j}
         batch_size = target.shape[0] # N
         loss = loss_fn(y_pred)
