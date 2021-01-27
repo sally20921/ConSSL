@@ -38,7 +38,7 @@ def get_transform(args, eval_stage):
 
 def get_dataset(args, transform, eval_stage):
     ds = dataset_dict[args.dataset]
-    ds = resolve_args(args, transform, eval_stage)
+    ds = ds.resolve_args(args, transform, eval_stage)
     ds = ds()
     return ds
 

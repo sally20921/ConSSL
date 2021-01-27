@@ -12,7 +12,7 @@ config = {
         'log_path': 'data/log',
         'ckpt_path': 'data/ckpt_path',
         'ckpt_name': None,
-        'batch_size': 4096,
+        'batch': 256,
         'shuffle': False, 
         'epoch': 100,
         'worker': 0,
