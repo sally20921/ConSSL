@@ -15,7 +15,8 @@ from logger import get_logger, log_results, log_results_cmd
 
 from ignite.engine.engine import Engine, State, Events
 from ignite.metrics import Loss
-
+from metric import get_metrics
+from metric.stat_metric import StatMetric
 import numpy as np
 # from apex import amp
 import ignite.distributed as idist
@@ -46,7 +47,11 @@ def get_trainer(args, model, loss_fn, optimizer, scheduler):
     trainer = Engine(update_model)
 
     metrics = {
+<<<<<<< HEAD
             'loss': Loss(output_transform=lambda x:(x[0], x[1])),
+=======
+            'loss': StatMetric(output_transform=lambda x:(x[0], x[1])),
+>>>>>>> 9c51fb7... up and running
             }
 
     for name, metric in metrics.items():
@@ -74,6 +79,7 @@ def pretrain(args):
 
         trainer = get_trainer(args, model, loss_fn, optimizer, scheduler)
 
+<<<<<<< HEAD
         # metrics = get_metrics(args)
         logger = get_logger(args)
 
@@ -94,6 +100,28 @@ def pretrain(args):
             save_ckpt(args, engine.state.epoch, engine.state.metrics['loss'], model)
 
         trainer.run(ds, max_epochs=args.epoch)
+=======
+    metrics = get_metrics(args)
+    logger = get_logger(args)
+
+    @trainer.on(Events.STARTED)
+    def on_training_started(engine):
+        print("Begin Pretraining")
+
+    # batch-wise
+    @trainer.on(Events.ITERATION_COMPLETED)
+    def log_iter_results(engine):
+        log_results(logger, 'pretrain/iter', engine.state, engine.state.iteration)
+
+    # epoch-wise (ckpt)
+    @trainer.on(Events.EPOCH_COMPLETED)
+    def save_epoch(engine):
+        log_results(logger, 'pretrain/epoch', engine.state, engine.state.epoch)
+        log_results_cmd(logger, 'pretrain/epoch', engine.state, engine.state.epoch)
+        save_ckpt(args, engine.state.epoch, engine.state.metrics['loss'], model)
+            
+    trainer.run(ds, max_epochs=args.epoch)
+>>>>>>> 9c51fb7... up and running
 
 
 
