@@ -35,10 +35,10 @@ def get_optimizer(args, sub_optimizer):
 
 def get_scheduler(args, optimizer):
     # string value comparison
-    if args.stage == 'pretrain':
-        scdl = optim_dict[args.pretrain_scheduler]
-    else: # args.stage == linear_eval:
-        scdl = optim_dict[args.linear_eval_scheduler]
+    #if args.stage == 'pretrain':
+    scdl = optim_dict[args.scheduler]
+    #else: # args.stage == linear_eval:
+    #    scdl = optim_dict[args.linear_eval_scheduler]
     scdl = scdl.resolve_args(args, optimizer)
     scdl.zero_grad()
     return scdl

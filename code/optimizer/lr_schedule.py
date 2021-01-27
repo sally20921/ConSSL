@@ -52,7 +52,7 @@ class SimclrLR(LambdaLR):
         return cls(optimizer, **options)
 
     def lr_lambda(self, step):
-        if step.self.warm_up:
+        if step > self.warm_up:
             return float(step) / float(max(1.0, self.warm_up))
         # progress after warmup
         progress = float(step - self.warm_up) / float(max(1.0, self.epochs-self.warm_up))

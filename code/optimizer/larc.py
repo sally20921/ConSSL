@@ -5,7 +5,7 @@ from torch.nn.parameter import Parameter
 from torch.optim.optimizer import Optimizer
 
 
-class LARS(Optimizer):
+class LARC(Optimizer):
     def __init__(self, sub_optimizer, eps, trust_coefficient, clip):
         self.optim = sub_optimizer
         self.eps = eps
@@ -73,8 +73,8 @@ class LARS(Optimizer):
                     if param_norm != 0 and grad_norm != 0:
                         adaptive_lr = self.trust_coef * (param_norm) / (grad_norm + param_norm * weight_decay + self.eps)
 
-                        if self.clip:
-                            adaptive_lr = min(adaptive_lr/group[lr], 1) 
+                        #if self.clip:
+                        #    adaptive_lr = min(adaptive_lr/group[lr], 1) 
                             # calculation of adaptive_lr so that when multiplied by lr it equals `min(adaptive_lr, lr)`
 
                     p.grad.data += weight_decay * p.data

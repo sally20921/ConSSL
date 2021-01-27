@@ -21,7 +21,7 @@ def add_loss():
                     loss_dict[underscore(str(member.__name__))] = member
 
 def get_loss(args):
-    loss = loss_dict[args.loss_name]
+    loss = loss_dict[args.loss]
     loss = loss.resolve_args(args)
     return loss.to(args.device)
 

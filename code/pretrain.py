@@ -3,13 +3,14 @@ get_transform(args, eval_stage)
 get_dataset(args, transform, eval_stage)
 In pretraining stage, eval_stage set to 'none'
 '''
+from metric.stat_metric import StatMetric
 from dataloader import get_transform
 from dataloader import get_dataset
 from ckpt import get_model_ckpt, save_ckpt
 from model import get_model
 from loss import get_loss
 from optimizer import get_optimizer, get_sub_optimizer, get_scheduler
-from metrics import get_metrics
+from metric import get_metrics
 
 from utils import prepare_batch
 from logger import get_logger, log_results, log_results_cmd

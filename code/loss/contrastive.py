@@ -58,7 +58,10 @@ class BYOLLoss:
         return cls()
 
 
-class SimSiamLoss:
+class SimSiamLoss(nn.CrossEntropyLoss):
+    def __init__(self):
+        super().__init__()
+
     def _loss(p,z):
         z.detach() # stop gradient
         p = F.normalize(p, dim=1)
