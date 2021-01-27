@@ -1,7 +1,11 @@
-# Exploring Simple Siamese Representation Learning
+# Contrastive Self-Supervised Learning SOTA Models
+This repository houses a collection of all self-supervised learning models.
+I implemented most of the current state-of-the-art self-supervised learning methods including
+SimCLRv2, BYOL, SimSiam, MoCov2, and SwAV.
+
 ## Install Package
 `
-pip3 install SOTA-SSL
+pip3 install SOTA-CSSL
 `
 
 ## Usage
