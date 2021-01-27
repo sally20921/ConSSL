@@ -23,12 +23,12 @@ config = {
         'sync_bn': True,
         # data loading
         'cache_image_vectors': False, 
-        'dataset': 'imagenet', # 'mnist', 'stl10', 'cifar10', 'cifar100'
-        'image_path': 'data/imagenet',
+        'dataset': 'cifar10_dataset', # 'mnist', 'stl10', 'cifar10', 'cifar100'
+        'image_path': 'data/cifar10',
         'image_size': 224,
         'normalize': [[0.485, 0.456, 0.406],[0.229, 0.224, 0.225]],
         # cifar norm = [[0.4914, 0.4822, 0.4465],[0.2023, 0.1994, 0.2010]]
-        'transform': 'sim_siam_transform',
+        'transform': 'simclr_transform',
         # model
         'use_inputs': ['x_i', 'x_j'],
         'use_outputs': ['p_i', 'p_j', 'z_i', 'z_j'], # simclr [p, z]

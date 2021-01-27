@@ -52,15 +52,15 @@ class EvalTransform:
     def resolve_args(cls, args, eval_stage):
         return cls(args=args, eval_stage=eval_stage)
 
-class SimCLRTransform:
+class SimclrTransform:
     def __init__(self, args):
         self.im = args.image_size
         self.norm = args.normalize
         self.transform = T.Compose([
             T.RandomResizedCrop(self.im, scale=(0.2,1.0)),
             T.RandomHorizontalFlip(),
-            T.RnadomApply([T.ColorJitter(0.8,0.8,0.8,0.2)],p=0.8),
-            T.RandomGrayScale(p=0.2),
+            T.RandomApply([T.ColorJitter(0.8,0.8,0.8,0.2)],p=0.8),
+            T.RandomGrayscale(p=0.2),
             T.RandomApply([T.GaussianBlur(kernel_size=self.im//20*2+1, sigma=(0.1,2.0))], p=0.5),
             T.ToTensor(),
             T.Normalize(*self.norm)
