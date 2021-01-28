@@ -1,5 +1,5 @@
 # ConSSL: Contrastive Self-Supervised Learning SOTA Models
-[https://github.com/sally20921/ConSSL/blob/main/logo_size.jpg]
+![image info](https://github.com/sally20921/ConSSL/blob/main/logo_size.jpg)
 
  <a href="https://sites.google.com/snu.ac.kr/serileeproject00/projects/">Website</a> 
 ![PyPI Status](https://badge.fury.io/py/ConSSL.svg)
