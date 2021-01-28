@@ -1,22 +1,30 @@
 # Contrastive Self-Supervised Learning SOTA Models
 This repository houses a collection of all self-supervised learning models.
-I implemented most of the current state-of-the-art self-supervised learning methods including
-SimCLRv2, BYOL, SimSiam, MoCov2, and SwAV.
+
+I implemented most of the current state-of-the-art self-supervised learning methods including SimCLRv2, BYOL, SimSiam, MoCov2, and SwAV.
 
 ## Install Package
 `
-pip3 install SOTA-CSSL
+pip install CSSL
 `
 
 ## Usage
-```
+```python
 import torch
-from SOTA_SSL_Models import SimSiam
+from CSSL.self_supervised import SimSiam
+from CSSL.self_supervised.simclr import SimCLREvalDataTransform, SimCLRTrainDatatTransform
 from torchvision import models
 
+train_dataset = MyDataset(transform=SimCLRTrainDataTransform())
+val_dataset = MyDataset(transforms=SimCLREvalDataTransform())
 
-model = SimSiam(args)
-
+model = SimSiam()
+trainer = Trainer(gpu=4)
+trainer.fit(
+	model,
+	DataLoader(train_dataset),
+	DataLoader(val_dataset),
+)
 ```
 
 ## Notes
@@ -25,6 +33,13 @@ model = SimSiam(args)
 - Adopting the MoCo augmentation during the warmup stage helps.
 
 ## Dataset
+
+Collection of useful datasets including STL10, MNIST, CIFAR10, CIFAR100, ImageNet.
+
+The dataset will be downloaded and is placed in this hierarchy below.
+
+Download imagenet dataset and place it accordingly since ImageNet dataset is too big of a file to download it on code.
+
 ```
 data/
   imagenet/
@@ -45,8 +60,68 @@ data/
       n021015557/
       ...
 ```
+
 ## Stages
-### Pretraining
+### Pretraining (Data Modules)
+Data Modules (introduced in PyTorch Lightning 0.9.0) decouple the data from a model. 
+
+A Data Module is simply a collection of a training dataloader, val dataloader and test dataloader. It specifies how to 
+- download/prepare data
+- train/val/test splits
+- transform
+
+You can use it like this.
+```python
+dm = MNISTDataModule('path/to/data')
+model = LiteModel()
+
+trainer = Trainer()
+trainer.fit(model, datamodule=dm)
+```
+You can also use it manually.
+```python
+dm = MNISTDataModule('/path/to/data')
+for batch in dm.train_dataloader():
+	...
+for batch in dm.val_dataloader():
+	...
+for batch in dm.test_dataloader():
+	...
+```
+### Contrastive Self-Supervised Learning Models
+#### SimCLRv2
+```python
+import pytorch_lightning as pl
+from CSSL.models.self_supervised import SimCLRv2
+from CSSL.datamodules import CIFAR10DatatModule
+from CSSL.models.self_supervised.simclr.transforms import (SimCLREvalDataTransform, SimCLRTrainDataTransform)
+
+# data
+dm = CIFAR10DataModule(num_workers=0)
+dm.train_transforms = SimCLRTrainDataTransform(32)
+dm.val_transforms = SimCLREvalDataTransform(32)
+
+# model
+model = SimCLRv2(num_samples=dm.num_samples, batch_size=dm.batch_size, dataset='cifar10')
+
+# fit 
+trainer = pl.Trainer()
+trainer.fit(model, datamodule=dm)
+
+```
+#### MoCov2
+```python
+```
+#### BYOL
+```python
+```
+#### SwAV
+```python
+```
+#### SimSiam
+```python
+```
+
 ### Linear Evaluation Protocol
 ### Semi-Supervised Learning
 use imagenet subset from https://github.com/tensorflow/datasets/tree/master/tensorflow_datasets/image_classification
