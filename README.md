@@ -90,6 +90,7 @@ for batch in dm.test_dataloader():
 ```
 ### Contrastive Self-Supervised Learning Models
 #### SimCLRv2
+##### Usage 
 ```python
 import pytorch_lightning as pl
 from CSSL.models.self_supervised import SimCLRv2
@@ -109,6 +110,20 @@ trainer = pl.Trainer()
 trainer.fit(model, datamodule=dm)
 
 ```
+##### Results
+|Implementation| Dataset     | Architecture | Optimizer|Batch size | Epochs | Linear Evaluation| 
+|--------------| ------------| ------------ | ---------|-----------| ------ | -----------------|
+|   Original   | CIFAR10     | ResNet50     | LARS     |1024       | 500    | 0.94             | 
+|   Mine       | CIFAR10     | ResNet50     | LARS-SGD |1024       | 500    | 0.88             | 
+
+#### to reproduce
+```
+cd code
+# change the configuration setting in config.py
+python cli.py pretrain
+python cli.py linear_evaluation
+```
+
 #### MoCov2
 ```python
 ```
@@ -118,6 +133,12 @@ trainer.fit(model, datamodule=dm)
 #### SwAV
 ```python
 ```
+##### Results
+|Implementation| Dataset     | Architecture | Optimizer|Batch size | Epochs | Linear Evaluation| 
+|--------------| ------------| ------------ | ---------|-----------| ------ | -----------------|
+|   Original   | CIFAR10     | ResNet50     | LARS     |1024       | 500    | 0.75             | 
+|   Mine       | CIFAR10     | ResNet50     | LARS-SGD |1024       | 500    | 0.74             | 
+
 #### SimSiam
 ```python
 ```
@@ -128,14 +149,14 @@ use imagenet subset from https://github.com/tensorflow/datasets/tree/master/tens
 
 ### Transfer Learning
 ## Dependency
-- I use python3 (3.5.2) and python2 is not supported. 
-- I use PyTorch (1.1.0), though tensorflow-gpu is necessary to launch tensorboard.
+- I use latest version of python 3 and python2 is not supported. 
+- I use latest version of PyTorch, though tensorflow-gpu is necessary to launch tensorboard.
 ## Install
 ```
 git clone --recurse-submodules (this repo)
 cd $REPO_NAME/code
 (use python >= 3.5)
-pip3 install -r requirements.txt
+pip install -r requirements.txt
 ```
 
 ### When using docker
@@ -197,6 +218,15 @@ python3 cli.py evaluate --ckpt_name=$CKPT_NAME
 ```
 - Substitute CKPT_NAME to your preferred checkpoint file, e.g., `ckpt_name=model_name_simclr_ckpt_3/loss_0.4818_epoch_15`
 ## Results
+
+### References
+- A lot of the codes are referenced from 
+https://github.com/PyTorchLightning/pytorch-lightning-bolts
+https://github.com/taoyang1122/pytorch-SimSiam
+https://github.com/zjcs/BYOL-PyTorch
+https://github.com/denn-s/SimCLR
+https://github.com/AidenDurrant/MoCo-Pytorch
+and more. 
 
 ## Contact Me
 To contact me, send an email to sally20921@snu.ac.kr
