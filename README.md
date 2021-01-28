@@ -123,6 +123,9 @@ trainer = pl.Trainer()
 trainer.fit(model, datamodule=dm)
 
 ```
+![simclr_pretrain](https://github.com/sally20921/ConSSL/blob/main/doc/simclr_pretraining.png)
+![simclr_finetune](https://github.com/sally20921/ConSSL/blob/main/doc/simclr_finetune.png)
+
 ##### Results
 |Implementation| Dataset     | Architecture | Optimizer|Batch size | Epochs | Linear Evaluation| 
 |--------------| ------------| ------------ | ---------|-----------| ------ | -----------------|
@@ -138,11 +141,17 @@ python cli.py linear_evaluation
 ```
 
 #### MoCov2
-```python
-```
+##### Results
+|Implementation| Dataset     | Architecture | LR       |Batch size | Epochs | Linear Evaluation| 
+|--------------| ------------| ------------ | ------- |-----------| ------ | -----------------|
+|  Mine  | ImageNet    | ResNet50     | Cosine |512      | 200   | 0.72        0.65  | 
+
 #### BYOL
-```python
-```
+##### Results
+|Implementation| Dataset     | Architecture | LR       |Batch size | Epochs | Linear Evaluation| 
+|--------------| ------------| ------------ | ------- |-----------| ------ | -----------------|
+|   Original   | ImageNet    | ResNet50     | Cosine |4096      | 300   | 0.72          | 
+|   Mine       | ImageNet    | ResNet50     | Cosine |512       | 200   | 0.68             | 
 #### SwAV
 ```python
 import pytorch_lightning as pl
@@ -167,15 +176,25 @@ model = SwAV(gpus=1, num_samples=dm.num_unlabeled_samples, dataset='stl10', batc
 trainer = pl.Trainer(precision=16)
 trainer.fit(model)
 ```
+![swav_pretrain](https://github.com/sally20921/ConSSL/blob/main/doc/swav_lr.png)
+![swav_lr](https://github.com/sally20921/ConSSL/blob/main/doc/swav_pretrain.png)
 ##### Results
 |Implementation| Dataset     | Architecture | Optimizer|Batch size | Epochs | Linear Evaluation| 
 |--------------| ------------| ------------ | ---------|-----------| ------ | -----------------|
-|   Original   | CIFAR10     | ResNet50     | LARS     |1024       | 500    | 0.75             | 
-|   Mine       | CIFAR10     | ResNet50     | LARS-SGD |1024       | 500    | 0.74             | 
+|   Mine       | STL10       | ResNet50     | LARS-SGD |128        | 100    | 0.86             | 
 
-#### SimSiam
-```python
+#### to reproduce
 ```
+cd code
+# change the configuration setting in config.py
+python cli.py pretrain
+python cli.py linear_evaluation
+```
+#### SimSiam
+|Implementation| Dataset     | Architecture         |Batch size | Epochs | Linear Evaluation| 
+|--------------| ------------| ------------  |-----------| ------ | -----------------|
+|   Original   | CIFAR10    | ResNet18      |512      | 800   | 0.91          | 
+|   Mine       | CIFAR10   | ResNet18     |512       | 300   | 0.72             | 
 
 ### Linear Evaluation Protocol
 ### Semi-Supervised Learning
