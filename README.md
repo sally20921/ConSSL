@@ -40,7 +40,7 @@ trainer.fit(
 )
 ```
 
-## Notes
+## Notes On Implementation
 
 - I found that using SimCLR augmentation directly will sometimes cause the model to collpase. This maybe due to the fact that SimCLR augmentation is too strong.
 - Adopting the MoCo augmentation during the warmup stage helps.
@@ -145,6 +145,27 @@ python cli.py linear_evaluation
 ```
 #### SwAV
 ```python
+import pytorch_lightning as pl
+from ConSSL.models.self_supervised import SwAV
+from ConSSL.datamodules import STL10DataModule
+from ConSSL.models.self_supervised.swav.transform import (SwAVTrainDataTransform, SwAVEvalDataTransform)
+from ConSSL.transforms.dataset_normalization import stl10_normalization
+
+# data 
+batch_size = 128
+dm = STL10DataModule(data_dir='.', batch_size=batch_size)
+dm.train_dataloader = dm.train_dataloader_mixed
+dm.val_dataloader = dm.val_dataloader_mixed
+
+dm.train_transforms = SwAVTrainDataTransform(normalize=stl10_normalization())
+dm.val_transforms = SwAVEvalDataTransform(normalize=stl10_normalization())
+
+# model
+model = SwAV(gpus=1, num_samples=dm.num_unlabeled_samples, dataset='stl10', batch_size=batch_size)
+
+# fit 
+trainer = pl.Trainer(precision=16)
+trainer.fit(model)
 ```
 ##### Results
 |Implementation| Dataset     | Architecture | Optimizer|Batch size | Epochs | Linear Evaluation| 
