@@ -5,14 +5,14 @@ I implemented most of the current state-of-the-art self-supervised learning meth
 
 ## Install Package
 `
-pip install CSSL
+pip install ConSSL
 `
 
 ## Usage
 ```python
 import torch
-from CSSL.self_supervised import SimSiam
-from CSSL.self_supervised.simclr import SimCLREvalDataTransform, SimCLRTrainDatatTransform
+from ConSSL.self_supervised import SimSiam
+from ConSSL.self_supervised.simclr import SimCLREvalDataTransform, SimCLRTrainDatatTransform
 from torchvision import models
 
 train_dataset = MyDataset(transform=SimCLRTrainDataTransform())
@@ -93,9 +93,9 @@ for batch in dm.test_dataloader():
 ##### Usage 
 ```python
 import pytorch_lightning as pl
-from CSSL.models.self_supervised import SimCLRv2
-from CSSL.datamodules import CIFAR10DatatModule
-from CSSL.models.self_supervised.simclr.transforms import (SimCLREvalDataTransform, SimCLRTrainDataTransform)
+from ConSSL.models.self_supervised import SimCLRv2
+from ConSSL.datamodules import CIFAR10DatatModule
+from ConSSL.models.self_supervised.simclr.transforms import (SimCLREvalDataTransform, SimCLRTrainDataTransform)
 
 # data
 dm = CIFAR10DataModule(num_workers=0)
