@@ -1,4 +1,11 @@
 # Contrastive Self-Supervised Learning SOTA Models
+<p align="center">
+  <a href="https://sites.google.com/snu.ac.kr/serileeproject00/projects/">Website</a> 
+</p>
+
+
+[![PyPI Status](https://badge.fury.io/py/ConSSL.svg)]
+
 This repository houses a collection of all self-supervised learning models.
 
 I implemented most of the current state-of-the-art self-supervised learning methods including SimCLRv2, BYOL, SimSiam, MoCov2, and SwAV.
