@@ -221,11 +221,11 @@ python3 cli.py evaluate --ckpt_name=$CKPT_NAME
 
 ### References
 - A lot of the codes are referenced from 
-https://github.com/PyTorchLightning/pytorch-lightning-bolts
-https://github.com/taoyang1122/pytorch-SimSiam
-https://github.com/zjcs/BYOL-PyTorch
-https://github.com/denn-s/SimCLR
-https://github.com/AidenDurrant/MoCo-Pytorch
+- https://github.com/PyTorchLightning/pytorch-lightning-bolts
+- https://github.com/taoyang1122/pytorch-SimSiam
+- https://github.com/zjcs/BYOL-PyTorch
+- https://github.com/denn-s/SimCLR
+- https://github.com/AidenDurrant/MoCo-Pytorch
 and more. 
 
 ## Contact Me
