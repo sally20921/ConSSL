@@ -4,7 +4,7 @@
 	
 <a href="https://sites.google.com/snu.ac.kr/serileeproject00/projects/"> Website / Documentation </a> 
 
-![PyPI Status](https://badge.fury.io/py/ConSSL.svg)
+![PyPI Status](https://img.shields.io/badge/Package-PyPI-blue)
 ![MIT License](https://img.shields.io/github/license/sally20921/ConSSL)
 </p>
 
