@@ -22,6 +22,7 @@ pip install ConSSL
 `
 
 ## Usage
+
 ```python
 import torch
 from ConSSL.self_supervised import SimSiam
@@ -50,7 +51,7 @@ trainer.fit(
 * get the output batch and select the n-th sample (choose n)
 * compute a dummy loss value of only that sample and compute the gradient w.r.t. the entire input batch
 * observce that only the i-th sample in the input batch has non-zero gradient
-```
+```python
 from pytorch_lightning import Trainer
 from ConSSL.callbacks import BatchGradientVerificationCallback
 
@@ -205,7 +206,7 @@ python cli.py linear_evaluation
 ##### Results
 |Implementation| Dataset     | Architecture | LR       |Batch size | Epochs | Linear Evaluation| 
 |--------------| ------------| ------------ | ------- |-----------| ------ | -----------------|
-|  Mine  | ImageNet    | ResNet50     | Cosine |512      | 200   | 0.72        0.65  | 
+|  Mine  | ImageNet    | ResNet50     | Cosine |512      | 200   |      0.65  | 
 
 #### BYOL
 ```python
@@ -303,7 +304,7 @@ for (x,y) in own_data:
  y_hat = classifier(feats)
 ```
 2. Freeze then Unfreeze
-```
+```python
 from ConSSL.models.self_supervised import SimCLR
 from ConSSL.models.regression import LogisticRregression
 
