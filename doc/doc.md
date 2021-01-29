@@ -135,5 +135,27 @@ trainer.fit(finetuner, dm)
 
 # test
 trainer.test(datamodule=dm)
+```
+# Semi-Supervised Learning
+* collection of utilities for semi-supervised learning where some part of the data is labeled and the other part is not.
+## Balanced Classes
+* Makes sure each batch has an equal amount of data from each class.
+```python
+from ConSSL.utils.semi_supervised import balance_classes
 
+'''args:
+X : input features
+Y: mixed labels (ints)
+batch_size: the ultimate batch size
+'''
+```
 
+## Half-Labeled Batches
+* given a labeled dataset and an unlabeled dataset, the function generates a joint pair where half the batches are labeled and the other half is not.
+```python
+from ConSSL.utils.semi_supervised import balance_classes
+
+'''
+ConSSL.utils.semi_supervised.generate_half_labeled_batches(smaller_set_X, smaller_set_Y, larger_set_X, larger_set_Y, batch_size)
+'''
+```
