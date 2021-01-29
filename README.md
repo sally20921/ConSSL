@@ -31,6 +31,7 @@ from torchvision import models
 train_dataset = MyDataset(transform=SimCLRTrainDataTransform())
 val_dataset = MyDataset(transforms=SimCLREvalDataTransform())
 
+# train from scratch
 model = SimSiam()
 trainer = Trainer(gpu=4)
 trainer.fit(
@@ -44,10 +45,70 @@ trainer.fit(
 
 - I found that using SimCLR augmentation directly will sometimes cause the model to collpase. This maybe due to the fact that SimCLR augmentation is too strong.
 - Adopting the MoCo augmentation during the warmup stage helps.
+- Gradient check for Batch-Optimization: Gradient descent over a batch of samples can not only benefit the optimization but also leverages data parallelism. However, you have to be careful not to mix data across the batch dimension. Only a small error in a reshape or permutation operation results in the optimization getting stuck and you won't even get a runtime eror. You should check the operations that reshape and permute tensor dimensions in your model. 
+* run the model on an example batch (can be random data)
+* get the output batch and select the n-th sample (choose n)
+* compute a dummy loss value of only that sample and compute the gradient w.r.t. the entire input batch
+* observce that only the i-th sample in the input batch has non-zero gradient
+```
+from pytorch_lightning import Trainer
+from ConSSL.callbacks import BatchGradientVerificationCallback
+
+model = YourLightningModule()
+verification = BatchGradientVerificationCallBack()
+trainer = Trainer(callbacks=[verification])
+trainer.fit(model)
+````
+- this is how you should predict based on ConSSL models in your own data
+```python
+# trained without labels 
+from ConSSL.models.self_supervised import SimCLR
+weight_path = 'path/to/your/checkpoint/file'
+simclr = SimCLR.load_from_checkpoint(weight_path, strict=False)
+resnet50_unsupervsied = simclr.encoder.eval()
+
+# trained with labels 
+from torchvision.models import resnet50
+resnet50_supervised = resnet50(pretrained=True)
+
+x = image_sample()
+unsup_feats = resnet50_unsupervsied(x)
+sup_feats = resnet50_supervised(x)
+```
 
 ## Dataset
 
 Collection of useful datasets including STL10, MNIST, CIFAR10, CIFAR100, ImageNet.
+```python
+from ConSSl.datamodules import CIFAR10DataModule, ImagenetDataModule, MNISTDataModule, STL10DataModule
+# ImagenetDataModule assumes you have ILSVRC2012 imagenet data downloadedd. It validates the data using meta.bin.
+
+# datamodules for debugging
+from ConSSL.datasets import DummyDataset
+from torch.utils.data import DataLoader 
+
+# mnist dims
+ds = DummyDataset((1,28,28), (1,))
+dl = DataLoader(ds, batch_size=256)
+# get first batch
+batch = next(iter(dl))
+x, y = batch
+x.size() # torch.Size([256, 1, 28, 28])
+y.size() # torch.Size([256,1])
+
+# standard transforms is defined as follows:
+mnist_transforms = transform_lib.Compose([transform_lib.ToTensor()])
+
+dm = CIFAR10DataModule(PATH)
+dm.train_transforms = 
+dm.test_transforms = 
+dm.val_transforms = 
+model = LiteModel()
+
+Trainer().fit(model, datamodule=dm)
+```
+
+
 
 The dataset will be downloaded and is placed in this hierarchy below.
 
@@ -147,6 +208,18 @@ python cli.py linear_evaluation
 |  Mine  | ImageNet    | ResNet50     | Cosine |512      | 200   | 0.72        0.65  | 
 
 #### BYOL
+```python
+from ConSSL.callbacks.byol_updates import BYOLMAWeightUpdate
+
+'''the exponential moving average weight update rule from BYOL.
+Your model should have self.online_network, self.target_network'''
+
+model = Model()
+model.online_network = 
+model.target_network = 
+
+trainer = Trainer(callbacks=[BYOLMAWeightUpdate(initial_tau=0.996)])
+```
 ##### Results
 |Implementation| Dataset     | Architecture | LR       |Batch size | Epochs | Linear Evaluation| 
 |--------------| ------------| ------------ | ------- |-----------| ------ | -----------------|
@@ -197,10 +270,78 @@ python cli.py linear_evaluation
 |   Mine       | CIFAR10   | ResNet18     |512       | 300   | 0.72             | 
 
 ### Linear Evaluation Protocol
+```python
+from pytorch_lightning as pl
+from ConSSL.models.regression import LogisticRegression
+from ConSSL.datamodules import ImagenetDataModule
+
+imagenet = ImagenetDataModule(PATH)
+
+# 224x224x3
+pixels_per_image = 150528
+model = LogisticRegression(input_dim=pixels_per_image, num_classes=1000)
+model.prepare_data = imagenet.prepare_data
+trainer = Trainer(gpus=2)
+trainer.fit(model, imagenet.train_dataloader(batch_size=256), imagenet.val_dataloader(batch_size=256))
+````
+
 ### Semi-Supervised Learning
 use imagenet subset from https://github.com/tensorflow/datasets/tree/master/tensorflow_datasets/image_classification
+1. Unfrozen Finetuning
+```python
+from ConSSL.models.self_supervised import SimCLR
+from ConSSL.models.regression import LogisticRregression
+
+weight_path = 'checkpoint/path'
+simclr = SimCLR.load_from_checkpoint(weight_path, strict=False)
+resnet50 = simclr.encoder 
+# don't call simclr.freeze()
+
+classifier = LogisticRegresion()
+for (x,y) in own_data:
+ feats = resnet50(x)
+ y_hat = classifier(feats)
+```
+2. Freeze then Unfreeze
+```
+from ConSSL.models.self_supervised import SimCLR
+from ConSSL.models.regression import LogisticRregression
+
+weight_path = 'checkpoint/path'
+simclr = SimCLR.load_from_checkpoint(weight_path, strict=False)
+resnet50 = simclr.encoder 
+resnet50.eval()
+
+classifier = LogisticRegression()
+for epoch in epochs:
+ for (x,y) in own_data:
+  feats = resnet50(x)
+  y_hat = classifier(feats)
+  loss = cross_entropy_with_logits(y_hat, y)
+ 
+ # unfreeze after 10 epochs 
+ if epoch == 10:
+  resnet.unfreeze()
+```
 
 ### Transfer Learning
+```python
+from pytorch_lightning as pl
+from ConSSL.models.regression import LogisticRregression
+from ConSSL.datamodules import MNISTDataModule
+
+dm = MNISTDataModule(num_workers=0, data_dir=tmpdir)
+
+model= LogisticRegression(input_dim=28*28, num_classes=10, learning_rate=0.001)
+model.prepare_data = dm.prepare_data
+model.train_dataloader = dm.train_dataloader
+model.val_dataloader = dm.val_dataloader
+model.test_dataloader = dm.test_dataloader
+
+trainer = pl.Trainer(max_epochs=200)
+trainer.fit(model)
+trainer.test(model)
+```
 ## Dependency
 - I use latest version of python 3 and python2 is not supported. 
 - I use latest version of PyTorch, though tensorflow-gpu is necessary to launch tensorboard.
@@ -270,7 +411,44 @@ cd code
 python3 cli.py evaluate --ckpt_name=$CKPT_NAME
 ```
 - Substitute CKPT_NAME to your preferred checkpoint file, e.g., `ckpt_name=model_name_simclr_ckpt_3/loss_0.4818_epoch_15`
-## Results
+
+```python
+from ConSSL.callbacks.ssl_online import SSLOnlineEvaluator
+
+''' attaches a MLP for fine-tuning using the standard self-supervised protocol'''
+model = Model()
+model.z_dim = # the representation dim
+model.num_classes = # the number of classes in the model
+
+online_eval = SSLOnlineEvaluator(z_dim=model.z_dim, num_classes=model.num_classes, dataset='imagenet')
+# if the dataset if stl10, you need to get the labeled batch
+```
+## Callback
+
+A callback is a self-contained program that can be intertwined into a training pipeline. 
+
+```python
+from ConSSL.callbacks import import Callback
+
+class MyCallback(Callback):
+ def on_epoch_end(self, trainer, pl_module):
+  # do something
+```
+
+The data monitoring callbacks allow you to log and inspect the distribution of data that passes through 
+the training step and layers of the model. 
+
+```python
+from ConSSL.callbacks import TrainingDataMonitor
+from pytorch_lightning import Trainer
+
+monitor = TrainingDataMonitor(log_every_n_steps=25)
+
+model = YourLightningModule()
+trainer = Trainer(callbacks=[monitor])
+trainer.fit()
+```
+
 
 ### References
 - A lot of the codes are referenced from 
