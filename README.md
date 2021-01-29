@@ -184,6 +184,9 @@ model = SimCLRv2(num_samples=dm.num_samples, batch_size=dm.batch_size, dataset='
 trainer = pl.Trainer()
 trainer.fit(model, datamodule=dm)
 
+#to finetune
+python simclr_finetuner.py --gpus 4 --ckpt_path path/to/simclr/ckpt --dataset cifar10 --batch_size 64 --num_workers 8 --learning_rate 0.3 --num_epochs 100
+
 ```
 ![simclr_pretrain](https://github.com/sally20921/ConSSL/blob/main/doc/simclr_pretraining.png)
 ![simclr_finetune](https://github.com/sally20921/ConSSL/blob/main/doc/simclr_finetune.png)
@@ -193,6 +196,8 @@ trainer.fit(model, datamodule=dm)
 |--------------| ------------| ------------ | ---------|-----------| ------ | -----------------|
 |   Original   | CIFAR10     | ResNet50     | LARS     |1024       | 500    | 0.94             | 
 |   Mine       | CIFAR10     | ResNet50     | LARS-SGD |1024       | 500    | 0.88             | 
+|   Original   | imagenet     | ResNet50     | LARS     |512       | 300   | 0.69             | 
+|   Mine       | imagenet    | ResNet50     | LARS-SGD |512       | 300    | 0.68             | 
 
 #### to reproduce
 ```
@@ -203,6 +208,25 @@ python cli.py linear_evaluation
 ```
 
 #### MoCov2
+```python
+# CLI command
+# imagenet
+python moco2_module.py --gpus 8 --dataset imagenet2012 --data_dir /path/to/imagenet --meta_dir /path/to/folder/with/meta.bin/ --batch_size 512
+
+ConSSL.models.self_supervised.MocoV2(base_encoder='resnet18', emb_dim=128, num_negatives=65536, encoder_momentum=0.999, softmax_temperature=0.07, learning_rate=0.03. momentum=0.9, weight_decay=0.0001, data_dir='./', batch_size=256, use_mlp=False, num_workers=8, *args, **kwargs)
+
+'''Args:
+base_encoder: torchvision model name or toch.nn.Module
+emb_dim: feature dimension
+num_negatives: queue size
+encoder_momentum: moco momentum of updating key encoder
+use_mlp: add an mlp to the encoder
+'''
+from ConSSL.models.self_supervised import MocoV2 
+model = MocoV2()
+trainer = Trainer()
+trainer.fit(model)
+```
 ##### Results
 |Implementation| Dataset     | Architecture | LR       |Batch size | Epochs | Linear Evaluation| 
 |--------------| ------------| ------------ | ------- |-----------| ------ | -----------------|
@@ -221,6 +245,15 @@ model.target_network =
 
 trainer = Trainer(callbacks=[BYOLMAWeightUpdate(initial_tau=0.996)])
 ```
+
+```python
+# CLI command
+python byol_module.py --gpus 8 --dataset imagenet2012 --data_dir /path/to/imagenet/ --meta_dir /path/to/folder/with/meta.bin/ --batch_size 512
+
+ConSSL.models.self_supervised.BYOL(num_classes, learning_rate=0.2, weight_decay=1.5e-6, input_height=32,
+batch_size=32, num_workers=0, warmup_epochs=10, max_epochs=1000, **kwargs)
+```
+
 ##### Results
 |Implementation| Dataset     | Architecture | LR       |Batch size | Epochs | Linear Evaluation| 
 |--------------| ------------| ------------ | ------- |-----------| ------ | -----------------|
