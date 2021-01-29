@@ -159,3 +159,47 @@ from ConSSL.utils.semi_supervised import balance_classes
 ConSSL.utils.semi_supervised.generate_half_labeled_batches(smaller_set_X, smaller_set_Y, larger_set_X, larger_set_Y, batch_size)
 '''
 ```
+
+# Self-Supervised Learning Contrastive Tasks
+## FeatureMapContrastiveTask
+
+* Compare sets of feature maps
+
+```python
+# generate multiple views of the same image
+x1_view_1 = data_augmentation(x1)
+x1_view_2 = data_augmentation(x1)
+
+x2_view_1 = data_augmentation(x2)
+x2_view_2 = data_augmentation(x2)
+
+anchor = x1_view_1
+positive = x1_view_2
+negative = x2_view_1
+
+# generate feature maps for each view
+(a0, a1, a2) = encoder(anchor)
+(p0, p1, p2) = encoder(positive)
+
+# make a comparison for a set of feature maps
+phi = some_score_function()
+
+# the '01' comparison
+score = phi(a0, p1)
+```
+* In practice the contrastive task creates a *BxB* matrix where *B* is the batch size.
+* The diagonals for set1 of feature maps are the anchors, the diagonals of set 2 of the feature maps are the positives, and the non-diagonals of set 1 are the negatives.
+
+```python
+from ConSSL.losses.self_supervised_learning import FeaturesContrastiveTask
+
+'''args:
+comparisons='00,11', tclip=10.0, bidirectional=True
+'''
+# extract feature maps
+p0,p1,p2 = encoder(x_pos)
+a0,a1,a2 = encoder(x_anchor)
+
+# compare only 0th feature map
+task = FeatureMapContrastiveTask('00')
+loss, regularizer = task((p0), (a0))
