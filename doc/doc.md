@@ -68,5 +68,72 @@ for batch in my_dataset:
 ```
 * This means you can now extract image representations that were pretrained via unsupervised learning.
 
+# Learning Rate Scheduler
+## Linear Warmup Cosine Annealing Learning Rate Scheduler
+```python
+from ConSSL.optimizers.lr_scheduler import LinearWarmupCosineAnnealingLR
+
+layer = nn.Linear(10,1)
+optimizer = Adam(layer.parameters(), lr=0.02)
+scheduler = LinearWarmupCosineAnnealingLR(optimizer, warmup_epoch=10, max_epochs=100)
+
+for epoch in range(100):
+ # ...
+ scheduler.step()
+ ```
+ 
+ # Self-Supervised Learning Transforms
+ ## SimCLR Transforms
+ ```from ConSSL.models.self_supervised.simclr.transforms import SimCLRDTrainDataTransforms, SimCLREvalDataTransforms
+ 
+ train_transforms = SimCLRTrainDataTransform(input_height=32)
+ eval_transforms = SimCLREvalDataTransform(input_height=32)
+ x = sample()
+ (xi, xj) = train_transform(x)
+ (xi, xj) = eval_transform(x)
+```
+
+# Utils
+## Identity class 
+```python
+from ConSSL.utils import Identity
+model = resnet18()
+model.fc = Identity()
+```
+## SSL-ready resnets
+* torchvision resnets with the fc layers removed and with the ability to return feature maps instead of just the last one 
+```python
+from ConSSL.utils.self_supervised import torchvision_ssl_encoder
+
+resnet = torchvision_ssl_encoder('resnet18', pretrained=False, return_all_features_maps=True)
+x = torch.rand(3,3,32,32)
+feat_maps = resnet(x)
+```
+
+## SSL backbone finetuner
+* finetunes a self-supervised learning backbone using the standard evaluation protocol of a single layer MLP with 1024 units
+```python 
+from ConSSL.self_supervised import SSLFineTuner
+from ConSSL.models.self_supervised import SimCLR
+from ConSSL.datamodules import CIFAR10DataModule
+from ConSSl.models.self_supervised.simclr.transforms import SimCLREvalTransforms, SimCLRTrainTransforms
+
+# pretrained model
+backbone = SimCLR.load_from_checkpoint(PATH, strict=False)
+
+# dataset + transforms
+dm = CIFAR10DataModule(data_dir='.')
+dm.train_transforms = SimCLRTrainTransforms
+dm_val_transforms = SimCLREvalTransforms
+
+# finetuner
+finetuner = SSLFineTuner(backbone, in_features=backbone.z_dim, num_classes=backbone.num_classes)
+
+# train
+trainer = pl.Trainer()
+trainer.fit(finetuner, dm)
+
+# test
+trainer.test(datamodule=dm)
 
 
