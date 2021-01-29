@@ -2,7 +2,7 @@
 <p align="center">
   <img src="https://github.com/sally20921/ConSSL/blob/main/logo_size.jpg" />
 	
-<a href="https://sites.google.com/snu.ac.kr/serileeproject00/projects/"> Website / Documentation </a> 
+<a href="https://sites.google.com/snu.ac.kr/serileeproject00/projects/"> Website </a> 
 
 ![PyPI Status](https://img.shields.io/badge/Package-PyPI-blue)
 ![MIT License](https://img.shields.io/github/license/sally20921/ConSSL)
