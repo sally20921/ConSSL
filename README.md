@@ -166,11 +166,11 @@ for batch in dm.test_dataloader():
 	...
 ```
 ### Contrastive Self-Supervised Learning Models
-#### SimCLRv2
+#### SimCLR
 ##### Usage 
 ```python
 import pytorch_lightning as pl
-from ConSSL.models.self_supervised import SimCLRv2
+from ConSSL.models.self_supervised import SimCLR
 from ConSSL.datamodules import CIFAR10DatatModule
 from ConSSL.models.self_supervised.simclr.transforms import (SimCLREvalDataTransform, SimCLRTrainDataTransform)
 
@@ -180,7 +180,7 @@ dm.train_transforms = SimCLRTrainDataTransform(32)
 dm.val_transforms = SimCLREvalDataTransform(32)
 
 # model
-model = SimCLRv2(num_samples=dm.num_samples, batch_size=dm.batch_size, dataset='cifar10')
+model = SimCLR(num_samples=dm.num_samples, batch_size=dm.batch_size, dataset='cifar10')
 
 # fit 
 trainer = pl.Trainer()
