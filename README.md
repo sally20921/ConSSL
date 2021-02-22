@@ -196,10 +196,10 @@ python simclr_finetuner.py --gpus 4 --ckpt_path path/to/simclr/ckpt --dataset ci
 ##### Results
 |Implementation| Dataset     | Architecture | Optimizer|Batch size | Epochs | Linear Evaluation| 
 |--------------| ------------| ------------ | ---------|-----------| ------ | -----------------|
-|   Original   | CIFAR10     | ResNet50     | LARS     |1024       | 500    | 0.94             | 
-|   Mine       | CIFAR10     | ResNet50     | LARS-SGD |1024       | 500    | 0.88             | 
-|   Original   | imagenet     | ResNet50     | LARS     |512       | 300   | 0.69             | 
-|   Mine       | imagenet    | ResNet50     | LARS-SGD |512       | 300    | 0.68             | 
+|   Original   | CIFAR10     | ResNet50     | LARS     |512       | 500    | 0.72             | 
+|   Mine       | CIFAR10     | ResNet50     | LARS-SGD |512       | 500    | 0.68             | 
+|   Original   | imagenet     | ResNet50     | LARS     |256       | 300   | 0.62             | 
+|   Mine       | imagenet    | ResNet50     | LARS-SGD |256      | 300    | 0.61             | 
 
 #### to reproduce
 ```
