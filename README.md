@@ -191,7 +191,7 @@ python simclr_finetuner.py --gpus 4 --ckpt_path path/to/simclr/ckpt --dataset ci
 
 ```
 ![simclr_pretrain](https://github.com/sally20921/ConSSL/blob/main/doc/simclr_pretraining.png)
-![simclr_finetune](https://github.com/sally20921/ConSSL/blob/main/doc/simclr_finetune.png)
+
 
 ##### Results
 |Implementation| Dataset     | Architecture | Optimizer|Batch size | Epochs | Linear Evaluation| 
