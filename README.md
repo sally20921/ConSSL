@@ -199,7 +199,7 @@ python simclr_finetuner.py --gpus 4 --ckpt_path path/to/simclr/ckpt --dataset ci
 |   Original   | CIFAR10     | ResNet50     | LARS     |512       | 500    | 0.72             | 
 |   Mine       | CIFAR10     | ResNet50     | LARS-SGD |512       | 200    | 0.68             | 
 |   Original   | imagenet     | ResNet50     | LARS     |256       | 500   | 0.67             | 
-|   Mine       | imagenet    | ResNet50     | LARS-SGD |256      | 200    | 0.63            | 
+|   Mine       | imagenet    | ResNet50     | LARS-SGD |256      | 200    | 0.64            | 
 
 #### to reproduce
 ```
