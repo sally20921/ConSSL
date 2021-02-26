@@ -303,7 +303,7 @@ python cli.py linear_evaluation
 |Implementation| Dataset     | Architecture         |Batch size | Epochs | Linear Evaluation| 
 |--------------| ------------| ------------  |-----------| ------ | -----------------|
 |   Original   | CIFAR10    | ResNet18      |512      | 800   | 0.91          | 
-|   Mine       | CIFAR10   | ResNet18     |512       | 300   | 0.72             | 
+|   Mine       | CIFAR10   | ResNet18     |512       | 300   | 0.82             | 
 
 ### Linear Evaluation Protocol
 ```python
