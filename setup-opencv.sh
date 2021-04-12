@@ -10,4 +10,5 @@ if ["$res" -eq "1"]; then
     apt-get install -y tzdata
     dpkg-reconfigure --frontend noninteractive tzdata
     apt-get -y install --no-install-recommends libglib2.0 libsm6 libxext6 libxrender-dev
+    apt-get update && apt-get install -y python3-opencv
 fi
