@@ -18,6 +18,37 @@ This repository houses a collection of all self-supervised learning models.
 
 I implemented most of the current state-of-the-art self-supervised learning methods including SimCLRv2, BYOL, SimSiam, MoCov2, and SwAV.
 
+## Introduction 
+- the supervised approach to learning features from labeled data has reached its saturation due to intense labor required in manually annotating millions of data samples
+- data itself provides supervision
+- basic intuition behind contrastive learning paradigm: push original and augmented images closer and push original and negative images away
+
+![image](https://user-images.githubusercontent.com/38284936/128333512-3f3d3288-60a2-4358-9b0f-9c046b5a37a8.png)
+
+![image](https://user-images.githubusercontent.com/38284936/128333563-d46d5818-5aff-43f5-99da-8b8495d17642.png)
+
+## Implementation Details
+
+- ResNet-50 widely used because of its balance between size and learning capability
+- output of the res5 (residual block) features are average-pooled to get a 2048-dimensional vector
+- apply a single linear projection to get a 128-dimensional feature vector
+- or a shallow MLP (1 hidden layer) that maps representations to a latent space where contrastive loss is applied
+- later stages of the encoder prove to be a better representation of the input
+- cosine similarity (L2 normalization) of two variables (vectors) is the cosine of the angle between them
+- InfoNCE (Noise Contrastive Estimation) loss where q is the original sample
+- perform a non-linear logistic regression that discriminates between observed data and some artifically generated noise
+
+![image](https://user-images.githubusercontent.com/38284936/128334132-1e325b11-25bb-4997-a7fd-bcc92e7dd138.png)
+
+- training involves learning the parameters of encoder network by minimizing the loss function
+
+## Results
+- models are used as frozen encoders for a linear classifier (linear evaluation protocol)
+
+![image](https://user-images.githubusercontent.com/38284936/128334253-286eb093-b227-41bd-a1b2-40326c216391.png)
+
+
+
 ## Install Package
 `
 pip install ConSSL
